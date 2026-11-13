@@ -41,19 +41,6 @@ jobs:
             cp -r app/src/main/libs/* app/src/main/jniLibs/
           fi
 
-      - name: Commit and Push .so Files
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          rm -rf app/src/main/libs
-          git add -f app/src/main/jniLibs/**/*.so
-          if git diff --staged --quiet; then
-            exit 0
-          else
-            git commit -m "Update native libraries [skip ci]"
-            git push
-          fi
-
       - name: Upload .so Files
         uses: actions/upload-artifact@v4
         with:
