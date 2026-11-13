@@ -31,6 +31,13 @@ static bool  isLogin              = true;
 static bool  showLoginSuccess     = false;
 
 static bool  attemptedAutoLogin   = false; 
+static bool yetkiVer = false;
+bool (*orig_Yetki)(void *instance);
+bool _Yetki(void *instance) {
+    if (yetkiVer) return true;
+    return orig_Yetki(instance);
+}
+
 
 void ShowLoginSuccess() {
     static float animProgress = 0.0f;
@@ -576,7 +583,8 @@ EGLBoolean _eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
                             ImGui::TableNextRow();
                             ImGui::TableSetColumnIndex(0);
                             {
-                                ImGui::Checkbox(OBFUSCATE("Example 1"), &example1);
+                                ImGui::Checkbox(OBFUSCATE("Yetki Ver"), &yetkiVer);
+
                             }
                             ImGui::TableSetColumnIndex(1);{
                                 ImGui::Checkbox(OBFUSCATE("Example 2"), &example2);
@@ -843,6 +851,8 @@ void* Init_Thread(void*) {
     if (!il2cppMap.isValid()) return nullptr;
 
     Attach();
+	HOOK(0x3591B68, _Yetki, orig_Yetki);
+	
     /* Place game hooks here, e.g.:
        HOOK(0x1234567, CW::Common::GetTouch, CW::Common::orig_GetTouch); */
 
